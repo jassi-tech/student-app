@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SchoolApp",
-    "slug": "SchoolApp",
+    "slug": "mvvss",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -12,6 +12,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.mvvss.schoolapp",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -43,6 +44,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "9db51d19-9b4e-408c-a8b0-346b81632b1f"
+      },
+      "apiUrl": "https://backend-zqxa.onrender.com"
+    },
+    "owner": "jass00044s-organization"
   }
 }

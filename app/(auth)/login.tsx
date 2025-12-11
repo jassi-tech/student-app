@@ -1,49 +1,61 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import InputField from "../../components/InputField";
 import { useTheme } from "../../context/ThemeContext";
+import { login as authLogin } from "../../services/auth";
 
 export default function Login() {
   const { colors } = useTheme();
-  const [rollNumber, setRollNumber] = useState("");
+  const [studentId, setStudentId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const onLogin = () => {
+  const onLogin = async () => {
     setError("");
-    if (!rollNumber.trim()) {
-      setError("Please enter your roll number.");
+    if (!studentId.trim()) {
+      setError("Please enter your Student ID.");
       return;
     }
-    if (!/^[0-9]+$/.test(rollNumber)) {
-      setError("Roll number must be numeric.");
-      return;
-    }
+    // allow alphanumeric student IDs - no numeric-only validation
     if (!password) {
       setError("Please enter your password.");
       return;
     }
-    router.replace("/(main)/dashboard");
+
+    setLoading(true);
+    try {
+      const result = await authLogin({ studentId, password });
+      // store token
+      if (result?.token) localStorage.setItem("token", result.token);
+      router.replace("/(main)/dashboard");
+    } catch (err: any) {
+      setError(err?.message || "Login failed");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.text }]}>Login</Text>
 
       <InputField
-        label="Roll Number"
-        keyboardType="number-pad"
+        label="Student ID"
+        placeholder="Student ID"
+        keyboardType="default"
         autoCapitalize="none"
-        value={rollNumber}
-        onChangeText={setRollNumber}
+        value={studentId}
+        onChangeText={setStudentId}
       />
 
-      <InputField label="Password" secureTextEntry value={password} onChangeText={setPassword} />
+      <InputField label="Password" placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
 
       {error ? <Text style={[styles.errorText, { color: colors.danger }]}>{error}</Text> : null}
 
-      <CustomButton title="Login" onPress={onLogin} style={styles.button} />
+      <CustomButton title={loading ? "Logging in..." : "Login"} onPress={onLogin} style={styles.button} disabled={loading} />
+      {loading ? <ActivityIndicator style={{ marginTop: 8 }} color={colors.primary} /> : null}
     </View>
   );
 }

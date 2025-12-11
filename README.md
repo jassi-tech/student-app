@@ -48,3 +48,13 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+## Development: Mock Authentication
+
+By default, the app uses the configured backend API to perform authentication. During local development you can enable a mock auth provider by setting environment variables in a `.env` file (never commit `.env`):
+
+- `MOCK_ALLOWED=true` — enable mock authentication
+- `MOCK_STUDENT_ID` — the allowed mock student id (e.g., `test123`)
+- `MOCK_PASSWORD` — the allowed mock password (e.g., `password`)
+
+When `BACKEND_URL` is not set and `MOCK_ALLOWED` is true, logins will only succeed if the credentials match the values above. This prevents accidentally allowing any user to log in during development.
