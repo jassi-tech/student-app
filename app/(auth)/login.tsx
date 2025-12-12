@@ -1,10 +1,12 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
 import CustomButton from "../../components/CustomButton";
 import InputField from "../../components/InputField";
 import { useTheme } from "../../context/ThemeContext";
-import { login as authLogin } from "../../services/auth";
+import { findUserByCredentials } from "../../services/mockData";
+// Use local mock login helper for dev/testing
 
 export default function Login() {
   const { colors } = useTheme();
@@ -27,9 +29,18 @@ export default function Login() {
 
     setLoading(true);
     try {
-      const result = await authLogin({ studentId, password });
-      // store token
-      if (result?.token) localStorage.setItem("token", result.token);
+      // Try to validate against local mock users first
+      const user = findUserByCredentials(studentId, password);
+      if (!user) {
+        setError("Invalid Student ID or password.");
+        return;
+      }
+      // Persist the canonical studentId (e.g. roll) so other screens read it
+      try {
+        await AsyncStorage.setItem("studentId", user.studentId);
+      } catch (e) {
+        console.warn("Failed to persist studentId", e);
+      }
       router.replace("/(main)/dashboard");
     } catch (err: any) {
       setError(err?.message || "Login failed");
@@ -39,6 +50,7 @@ export default function Login() {
   };
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Image source={require("../../assets/images/icon.png")} style={styles.logo} resizeMode="contain" />
       <Text style={[styles.title, { color: colors.text }]}>Login</Text>
 
       <InputField
@@ -66,6 +78,7 @@ const styles = StyleSheet.create({
     padding: 24,
     justifyContent: "center",
   },
+  logo: { width: 120, height: 120, alignSelf: "center", marginBottom: 18 },
   title: { fontSize: 28, fontWeight: "700", marginBottom: 24 },
   input: {
     borderWidth: 1,
