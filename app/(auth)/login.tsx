@@ -1,7 +1,15 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+} from "react-native";
 import CustomButton from "../../components/CustomButton";
 import InputField from "../../components/InputField";
 import { useTheme } from "../../context/ThemeContext";
@@ -49,36 +57,46 @@ export default function Login() {
     }
   };
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <Image source={require("../../assets/images/icon.png")} style={styles.logo} resizeMode="contain" />
-      <Text style={[styles.title, { color: colors.text }]}>Login</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode={Platform.OS === "ios" ? "on-drag" : "interactive"}
+      >
+          <Image source={require("../../assets/images/login.png")} style={styles.logo} resizeMode="contain" />
+          <Text style={[styles.title, { color: colors.text }]}>Login</Text>
 
-      <InputField
-        label="Student ID"
-        placeholder="Student ID"
-        keyboardType="default"
-        autoCapitalize="none"
-        value={studentId}
-        onChangeText={setStudentId}
-      />
+          <InputField
+            label="Student ID"
+            placeholder="Student ID"
+            keyboardType="default"
+            autoCapitalize="none"
+            value={studentId}
+            onChangeText={setStudentId}
+          />
 
-      <InputField label="Password" placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
+          <InputField label="Password" placeholder="Password" secureTextEntry value={password} onChangeText={setPassword} />
 
-      {error ? <Text style={[styles.errorText, { color: colors.danger }]}>{error}</Text> : null}
+          {error ? <Text style={[styles.errorText, { color: colors.danger }]}>{error}</Text> : null}
 
-      <CustomButton title={loading ? "Logging in..." : "Login"} onPress={onLogin} style={styles.button} disabled={loading} />
-      {loading ? <ActivityIndicator style={{ marginTop: 8 }} color={colors.primary} /> : null}
-    </View>
+          <CustomButton title={loading ? "Logging in..." : "Login"} onPress={onLogin} style={styles.button} disabled={loading} />
+          {loading ? <ActivityIndicator style={{ marginTop: 8 }} color={colors.primary} /> : null}
+        </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     padding: 24,
     justifyContent: "center",
   },
-  logo: { width: 120, height: 120, alignSelf: "center", marginBottom: 18 },
+  logo: { width: 250, height: 250, alignSelf: "center", marginBottom: 18 },
   title: { fontSize: 28, fontWeight: "700", marginBottom: 24 },
   input: {
     borderWidth: 1,

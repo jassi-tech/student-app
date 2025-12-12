@@ -7,13 +7,24 @@
     "production": {
       "android": {
         "buildType": "app-bundle"
+      },
+      "ios": {
+        "distribution": "store"
       }
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
+      },
+      "ios": {
+        "distribution": "internal",
+        "simulator": false
       }
+    },
+    "simulator": {
+      "distribution": "internal",
+      "ios": { "simulator": true }
     }
   }
 }

@@ -1,12 +1,10 @@
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
-import { useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { useTheme } from "../../context/ThemeContext";
 
 export default function MainLayout() {
   const { colors } = useTheme();
-  const router = useRouter();
 
   function CustomDrawerContent(props: any) {
     return (
@@ -22,9 +20,9 @@ export default function MainLayout() {
             label="Logout"
             labelStyle={{ color: colors.danger }}
             onPress={() => {
-              // navigate to logout screen which handles clearing auth and redirecting
+              // navigate to the dedicated logout screen which will clear auth state and redirect
               props.navigation.closeDrawer();
-              router.replace("/(auth)/login");
+              props.navigation.navigate("logout");
             }}
           />
         </View>
